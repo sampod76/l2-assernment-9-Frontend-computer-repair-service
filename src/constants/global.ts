@@ -140,3 +140,8 @@ export enum ExamType {
   FINAL = "FINAL",
   MIDTERM = "MIDTERM",
 }
+
+export enum ENUM_STATUS {
+  ACTIVE = "active",
+  DEACTIVE = "deactivate",
+}

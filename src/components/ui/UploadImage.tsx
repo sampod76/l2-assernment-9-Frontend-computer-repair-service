@@ -38,11 +38,14 @@ const UploadImage = ({ name }: ImageUploadProps) => {
   ) => {
     if (info.file.status === "uploading") {
       setLoading(true);
+      
       return;
     }
     if (info.file.status === "done") {
       // Get this url from response in real world.
-      setValue(name, info.file.originFileObj);
+      console.log(info.file.response.data.url);
+      // only image links get
+      setValue(name, info.file.response.data.url);
       getBase64(info.file.originFileObj as RcFile, (url) => {
         setLoading(false);
         setImageUrl(url);
@@ -64,7 +67,7 @@ const UploadImage = ({ name }: ImageUploadProps) => {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="/api/file"
+        action={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/uploade-single-image`}
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >
@@ -72,7 +75,7 @@ const UploadImage = ({ name }: ImageUploadProps) => {
           <Image
             src={imageUrl}
             alt="avatar"
-            style={{ width: "100%" }}
+            className="w-full h-fit"
             width={100}
             height={100}
           />

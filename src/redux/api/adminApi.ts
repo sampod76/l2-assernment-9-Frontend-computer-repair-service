@@ -11,12 +11,13 @@ export const adminApi = baseApi.injectEndpoints({
         url: "/users/create-admin",
         method: "POST",
         data,
-        contentType: "multipart/form-data",
+        // contentType: "multipart/form-data",
+        contentType: "application/json",
       }),
-      // invalidatesTags: [tagTypes.admin],
+      invalidatesTags: [tagTypes.admin],
     }),
 
-    admins: build.query({
+    getMultipleAdmins: build.query({
       query: (arg: Record<string, any>) => {
         return {
           url: ADMIN_URL,
@@ -30,14 +31,14 @@ export const adminApi = baseApi.injectEndpoints({
           meta,
         };
       },
-      // providesTags: [tagTypes.admin],
+      providesTags: [tagTypes.admin],
     }),
-    admin: build.query({
+    getSingleadmin: build.query({
       query: (id: string | string[] | undefined) => ({
         url: `${ADMIN_URL}/${id}`,
         method: "GET",
       }),
-      // providesTags: [tagTypes.admin],
+      providesTags: [tagTypes.admin],
     }),
     updateAdmin: build.mutation({
       query: (data) => ({
@@ -45,21 +46,21 @@ export const adminApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: data.body,
       }),
-      // invalidatesTags: [tagTypes.admin],
+      invalidatesTags: [tagTypes.admin],
     }),
     deleteAdmin: build.mutation({
       query: (id) => ({
         url: `${ADMIN_URL}/${id}`,
         method: "DELETE",
       }),
-      // invalidatesTags: [tagTypes.admin],
+      invalidatesTags: [tagTypes.admin],
     }),
   }),
 });
 
 export const {
-  useAdminsQuery,
-  useAdminQuery,
+  useGetMultipleAdminsQuery,
+  useGetSingleadminQuery,
   useAddAdminWithFormDataMutation,
   useUpdateAdminMutation,
   useDeleteAdminMutation,

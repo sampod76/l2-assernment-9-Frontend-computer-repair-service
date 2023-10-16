@@ -1,4 +1,4 @@
-import { useAcademicDepartmentsQuery } from "@/redux/api/academic/departmentApi";
+import { useAcademicDepartmentsQuery } from "@/redux/api/categoryApi";
 import FormSelectField, { SelectOptions } from "./FormSelectField";
 
 type ACDepartmentIDFieldProps = {

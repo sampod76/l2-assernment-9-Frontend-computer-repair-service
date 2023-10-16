@@ -1,7 +1,7 @@
 "use client";
 
 import { getErrorMessageByPropertyName } from "@/utils/schema-validator";
-import { Input } from "antd";
+import { Input, InputNumber } from "antd";
 import { spawn } from "child_process";
 import { useFormContext, Controller } from "react-hook-form";
 interface IInput {
@@ -58,8 +58,19 @@ const FormInput = ({
               {...field}
               value={value ? value : field.value}
             />
-          ) : (
+          )
+          //  : type === "number" ? (
+          //   <InputNumber
+          //     type={type}
+          //     size={size}
+          //     placeholder={placeholder}
+          //     {...field}
+          //     value={value ? value : field.value}
+          //   />
+          // ) 
+          : (
             <Input
+            required={required}
               type={type}
               size={size}
               placeholder={placeholder}

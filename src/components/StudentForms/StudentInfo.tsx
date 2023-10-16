@@ -9,7 +9,7 @@ import {
   facultyOptions,
   genderOptions,
 } from "@/constants/global";
-import ACDepartmentField from "../Forms/ACDepartmentField";
+import ACDepartmentField from "../Forms/CategoryField";
 import ACFacultyField from "../Forms/ACFacultyField";
 import ACSemesterField from "../Forms/ACSemesterField";
 

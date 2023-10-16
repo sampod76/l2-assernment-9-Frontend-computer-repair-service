@@ -13,10 +13,13 @@ import {
 import { useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
-import { useAdminsQuery, useDeleteAdminMutation } from "@/redux/api/adminApi";
+import { useDeleteAdminMutation,  useGetMultipleAdminsQuery } from '@/redux/api/adminApi';
+ 
+
 import { IDepartment } from "@/types";
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
+import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";
 
 const AdminPage = () => {
   const query: Record<string, any> = {};
@@ -43,22 +46,18 @@ const AdminPage = () => {
   if (!!debouncedSearchTerm) {
     query["searchTerm"] = debouncedSearchTerm;
   }
-  const { data, isLoading } = useAdminsQuery({ ...query });
+  const { data = [], isLoading } = useGetMultipleAdminsQuery({ ...query });
 
-  const admins = data?.admins;
+  //@ts-ignore
+  const adminData = data?.data;
+  //@ts-ignore
   const meta = data?.meta;
 
   const columns = [
     {
-      title: "Id",
-      dataIndex: "id",
-      sorter: true,
-    },
-    {
       title: "Name",
-      dataIndex: "name",
-      render: function (data: Record<string, string>) {
-        const fullName = `${data?.firstName} ${data?.middleName} ${data?.lastName}`;
+      render: function (data: any) {
+        const fullName = `${data?.name} `;
         return <>{fullName}</>;
       },
     },
@@ -66,17 +65,7 @@ const AdminPage = () => {
       title: "Email",
       dataIndex: "email",
     },
-    {
-      title: "Department",
-      dataIndex: "managementDepartment",
-      render: function (data: IDepartment) {
-        return <>{data?.title}</>;
-      },
-    },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-    },
+
     {
       title: "Created at",
       dataIndex: "createdAt",
@@ -87,13 +76,12 @@ const AdminPage = () => {
     },
     {
       title: "Contact no.",
-      dataIndex: "contactNo",
+      dataIndex: "phoneNumber",
     },
     {
       title: "Action",
-      dataIndex: "id",
+      dataIndex: "_id",
       render: function (data: any) {
-        // console.log(data);
         return (
           <>
             <Link href={`/super_admin/admin/details/${data}`}>
@@ -112,15 +100,7 @@ const AdminPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            <Button
-              type="primary"
-              onClick={() => {
-                setOpen(true);
-                setAdminId(data);
-              }}
-              danger
-              style={{ marginLeft: "3px" }}
-            >
+            <Button onClick={() => deleteAdminHandler(data)} type="primary" danger>
               <DeleteOutlined />
             </Button>
           </>
@@ -147,28 +127,31 @@ const AdminPage = () => {
   };
 
   const deleteAdminHandler = async (id: string) => {
-    // console.log(id);
-    try {
-      const res = await deleteAdmin(id);
-      if (res) {
-        message.success("Admin Successfully Deleted!");
-        setOpen(false);
+    console.log(id);
+    confirm_modal(`Are you sure you want to delete`).then(async(res) => {
+      if (res.isConfirmed) {
+        try {
+          const res = await deleteAdmin(id).unwrap();
+          if (res.success ==false) {
+            // message.success("Admin Successfully Deleted!");
+            // setOpen(false);
+            Error_model_hook(res?.message)
+          }else{
+            Success_model("Admin Successfully Deleted")
+          }
+        } catch (error: any) {
+          message.error(error.message);
+        }
       }
-    } catch (error: any) {
-      message.error(error.message);
-    }
+    });
   };
-
+  if(isLoading){
+    return message.loading("Loading..")
+  }
+console.log(data);
   return (
     <div>
-      <UMBreadCrumb
-        items={[
-          {
-            label: "super_admin",
-            link: "/super_admin",
-          },
-        ]}
-      />
+    
       <ActionBar title="Admin List">
         <Input
           size="large"
@@ -197,7 +180,7 @@ const AdminPage = () => {
       <UMTable
         loading={isLoading}
         columns={columns}
-        dataSource={admins}
+        dataSource={adminData}
         pageSize={size}
         totalPages={meta?.total}
         showSizeChanger={true}

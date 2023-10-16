@@ -10,7 +10,7 @@ import { storeUserInfo } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/schemas/login";
-import { useAdminQuery, useAdminsQuery } from "@/redux/api/adminApi";
+
 
 type FormValues = {
   email: string;
@@ -18,14 +18,12 @@ type FormValues = {
 };
 
 const LoginPage = () => {
-  const [userLogin, {error}] = useUserLoginMutation();
+  const [userLogin, {error,isLoading}] = useUserLoginMutation();
 
-  const { data, isLoading } = useAdminsQuery({});
+
   // console.log( data)
   const router = useRouter();
-  if (isLoading) {
-    return <h1>Loading..</h1>;
-  }
+ 
   const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
     try {
       const res = await userLogin({ ...data }).unwrap();
@@ -33,12 +31,15 @@ const LoginPage = () => {
       if (res?.accessToken) {
         router.push("/profile");
         message.success("User logged in successfully!");
+        storeUserInfo({ accessToken: res?.accessToken });
       }
-      storeUserInfo({ accessToken: res?.accessToken });
     } catch (err: any) {
       console.log(err);
     }
   };
+  if(isLoading){
+   return message.loading("Loging...")
+  }
   // redux error
   if (error) {
     console.log(error);
