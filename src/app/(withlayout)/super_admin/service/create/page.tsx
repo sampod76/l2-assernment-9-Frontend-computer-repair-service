@@ -21,16 +21,16 @@ const CreateService = () => {
   const [addService, { isLoading: serviceLoading }] =
     useAddServiceWithFormDataMutation();
   const { data = [], isLoading } = useGetAllCategoryQuery({});
+ 
   const onSubmit = async (values: any) => {
-   
-    const changeValues={...values, serviceDate:new Date().toISOString()}
-   
+    const changeValues = { ...values, serviceDate: new Date().toISOString() };
+
     try {
-      const res = await addService({...changeValues}).unwrap();
-      if(res.success == false) {
-        Error_model_hook(res?.message)
-      }else{
-        Success_model("Successfully added service")
+      const res = await addService({ ...changeValues }).unwrap();
+      if (res.success == false) {
+        Error_model_hook(res?.message);
+      } else {
+        Success_model("Successfully added service");
       }
       console.log(res);
     } catch (error: any) {
@@ -39,16 +39,16 @@ const CreateService = () => {
     }
   };
 
-  if(serviceLoading){
-    return message.loading("Loading...")
+  if (serviceLoading) {
+     message.loading("Loading...");
   }
 
   return (
     <div>
       <div>
-        {/* resolver={yupResolver(adminSchema)} */}
+        
         {/* resolver={yupResolver(IServiceSchema)} */}
-        <Form submitHandler={onSubmit} >
+        <Form submitHandler={onSubmit} resolver={yupResolver(IServiceSchema)}>
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -68,7 +68,9 @@ const CreateService = () => {
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
@@ -83,7 +85,9 @@ const CreateService = () => {
               </Col>
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
@@ -92,13 +96,15 @@ const CreateService = () => {
                   type="number"
                   name="price"
                   size="large"
-                  label="Per Ticket Price"
+                  label="Tk (Per Person)"
                   required={true}
                 />
               </Col>
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
@@ -107,13 +113,15 @@ const CreateService = () => {
                   type="text"
                   name="contact"
                   size="large"
-                  label="Bus Driver Number"
+                  label="Driver Number"
                   required={true}
                 />
               </Col>
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
@@ -126,7 +134,7 @@ const CreateService = () => {
                       marginBottom: "10px",
                     }}
                   >
-                    <FormDatePicker name="serviceDate" label="Date"  />
+                    <FormDatePicker name="serviceDate" label="*Date (launching date)" />
                   </Col>
                   <Col
                     className="gutter-row"
@@ -139,7 +147,7 @@ const CreateService = () => {
                       type="number"
                       name="availableTickets"
                       size="large"
-                      label="Available Tickets"
+                      label="Available Sit"
                       required={true}
                     />
                   </Col>
@@ -148,7 +156,9 @@ const CreateService = () => {
 
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
@@ -164,7 +174,7 @@ const CreateService = () => {
                   >
                     <FormSelectField
                       name="category"
-                      label="Select Category"
+                      label="*Select Category"
                       required={true}
                       options={
                         //@ts-ignore
@@ -208,25 +218,26 @@ const CreateService = () => {
 
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
               >
-                <UploadImage  name="image" />
+                <UploadImage name="image" />
               </Col>
               <Col span={12} style={{ margin: "10px 0" }}>
                 <FormTextArea
                   name="description"
                   label="Service description"
                   rows={4}
-                 
                 />
               </Col>
 
-              {/* <Col span={12} style={{ margin: "10px 0" }}>
-                <FormTextArea name="address" label="Address" rows={4} />
-              </Col> */}
+              <Col span={12} style={{ margin: "10px 0" }}>
+                <FormTextArea name="address" label="*Aria (Areas where the services will be provided)" rows={4} />
+              </Col>
             </Row>
           </div>
 

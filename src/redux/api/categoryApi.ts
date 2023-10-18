@@ -1,5 +1,5 @@
 import { tagTypes } from "@/redux/tag-types";
-import { IAcademicDepartment, ICategory, IMeta } from "@/types";
+import {  ICategory, IMeta } from "@/types";
 import { baseApi } from "./baseApi";
 
 const CATEGORY_URL = "/category";

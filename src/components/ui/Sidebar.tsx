@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 
 import { sidebarItems } from "@/constants/sidebarItems";
@@ -15,6 +15,26 @@ const SideBar = () => {
   // const role = USER_ROLE.ADMIN;
   const { role } = getUserInfo() as any;
   // console.log(role);
+
+  // Function to handle sidebar collapsing based on screen width
+  const handleSidebarCollapse = () => {
+    if (window.innerWidth <= 768) {
+      setCollapsed(true);
+    } else {
+      setCollapsed(false);
+    }
+  };
+
+  useEffect(() => {
+    // Initialize sidebar state based on the initial screen width
+    handleSidebarCollapse();
+    // Attach an event listener to handle changes in screen width
+    window.addEventListener("resize", handleSidebarCollapse);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", handleSidebarCollapse);
+    };
+  }, []);
 
   return (
     <Sider
@@ -41,7 +61,7 @@ const SideBar = () => {
           padding: "10px 0px",
         }}
       >
-        UMS
+        TDN
       </div>
       <Menu
         theme="dark"

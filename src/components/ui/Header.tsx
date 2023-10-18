@@ -3,6 +3,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { getUserInfo, removeUserInfo } from "@/services/auth.service";
 import { authKey } from "@/constants/storageKey";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const { Header: AntHeader } = Layout;
 
 const Header = () => {
@@ -31,15 +32,22 @@ const Header = () => {
       }}
     >
       <Row
-        justify="end"
+        justify="space-between"
         align="middle"
         style={{
           height: "100%",
         }}
       >
+        <div>
+          <Link href={'/'}  className="text-lg underline-offset-8">Home</Link>
+        </div>
+        <div style={{display: "flex",
+            justifyContent: "center",
+            alignItems: "center"}}>
         <p
           style={{
             margin: "0px 5px",
+            
           }}
         >
           {role}
@@ -51,6 +59,8 @@ const Header = () => {
             </Space>
           </a>
         </Dropdown>
+        </div>
+       
       </Row>
     </AntHeader>
   );

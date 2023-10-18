@@ -1,9 +1,11 @@
 import * as yup from "yup";
+export const serviceStatus = ["available", "upcoming", "unavailable"];
+export type ServiceStatusType = "available"| "upcoming"| "unavailable"
 export const IServiceSchema = yup.object().shape({
     title: yup.string().required('Title is required'),
     price: yup.string().required('Price is required'),
     // price: yup.number().required('Price is required').positive(),
-    images: yup.string().required('Images are required'),
+    image: yup.string().required('Images are required'),
     description: yup.string().required('Description is required'),
     address: yup.string(),
     contact: yup.string().required('Contact is required'),
@@ -20,3 +22,23 @@ export const IServiceSchema = yup.object().shape({
     //   message: yup.string(),
     // })),
   });
+
+  export interface IService {
+    title: string;
+    price: string;
+    image: string;
+    description: string;
+    address?: string;
+    contact: string;
+    availableTickets: string;
+    serviceDate: string;
+    category: string;
+    status: ServiceStatusType;
+    publisher: string;
+    // If you want to include the reviews validation:
+    // reviews?: Array<{
+    //   userId: string;
+    //   star: number;
+    //   message?: string;
+    // }>;
+  }

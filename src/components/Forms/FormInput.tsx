@@ -14,6 +14,7 @@ interface IInput {
   validation?: object;
   label?: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 const FormInput = ({
@@ -26,6 +27,7 @@ const FormInput = ({
   validation,
   label,
   required,
+  disabled = false,
 }: IInput) => {
   const {
     control,
@@ -36,7 +38,7 @@ const FormInput = ({
 
   return (
     <>
-      {required ? (
+      {required && type !== "number" ? (
         <span
           style={{
             color: "red",
@@ -45,32 +47,46 @@ const FormInput = ({
           *
         </span>
       ) : null}
-      {label ? label : null}
+      {label && type !== "number" ? label : null}
       <Controller
         control={control}
         name={name}
         render={({ field }) =>
           type === "password" ? (
             <Input.Password
+              disabled={disabled}
               type={type}
               size={size}
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}
             />
-          )
-          //  : type === "number" ? (
-          //   <InputNumber
-          //     type={type}
-          //     size={size}
-          //     placeholder={placeholder}
-          //     {...field}
-          //     value={value ? value : field.value}
-          //   />
-          // ) 
-          : (
+          ) : type === "number" ? (
+            <div className="flex flex-col" >
+              <h1>
+                {required ? (
+                  <span
+                    style={{
+                      color: "red",
+                    }}
+                  >
+                    *
+                  </span>
+                ) : null}
+                {label}
+              </h1>
+              <InputNumber
+                // type={type}
+                min={0}
+                size={size}
+                placeholder={placeholder}
+                {...field}
+                value={value ? value : field.value}
+              />
+            </div>
+          ) : (
             <Input
-            required={required}
+              required={required}
               type={type}
               size={size}
               placeholder={placeholder}

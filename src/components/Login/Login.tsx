@@ -10,6 +10,8 @@ import { storeUserInfo } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/schemas/login";
+import { Error_model_hook } from "@/utils/modalHook";
+import LoadingForDataFetch from "../Utlis/LoadingForDataFetch";
 
 
 type FormValues = {
@@ -32,13 +34,15 @@ const LoginPage = () => {
         router.push("/profile");
         message.success("User logged in successfully!");
         storeUserInfo({ accessToken: res?.accessToken });
+      }else{
+        Error_model_hook(res?.message)
       }
     } catch (err: any) {
       console.log(err);
     }
   };
   if(isLoading){
-   return message.loading("Loging...")
+   return <LoadingForDataFetch/>
   }
   // redux error
   if (error) {

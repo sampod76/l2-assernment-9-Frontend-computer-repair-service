@@ -12,20 +12,7 @@ export const genderOptions = [
     value: "others",
   },
 ];
-export const departmentOptions = [
-  {
-    label: "HR",
-    value: "hr manager",
-  },
-  {
-    label: "Finance",
-    value: "finance",
-  },
-  {
-    label: "Management",
-    value: "management",
-  },
-];
+
 
 export const bloodGroupOptions = [
   {
@@ -62,40 +49,7 @@ export const bloodGroupOptions = [
   },
 ];
 
-export const facultyOptions = [
-  {
-    label: "Engineering",
-    value: "engineering",
-  },
-  {
-    label: "Faculty of science and engineering",
-    value: "Faculty of science and engineering",
-  },
-];
-export const acDepartmentOptions = [
-  {
-    label: "CSE",
-    value: "cse",
-  },
-  {
-    label: "Software Engineering",
-    value: "software engineering",
-  },
-];
-export const acSemesterOptions = [
-  {
-    label: "Fall 2023",
-    value: "fall23",
-  },
-  {
-    label: "Autumn 2023",
-    value: "autumn2023",
-  },
-  {
-    label: "Summer 2023",
-    value: "summer23",
-  },
-];
+
 
 export const months = [
   "January",
@@ -134,7 +88,8 @@ export const daysOptions = days.map((day: string) => {
   };
 });
 
-export const semesterRegistrationStatus = ["UPCOMING", "ONGOING", "ENDED"];
+export const serviceStatus = ["available", "upcoming", "unavailable"];
+// 'available' | 'upcoming' | 'unavailable'
 
 export enum ExamType {
   FINAL = "FINAL",
@@ -143,5 +98,14 @@ export enum ExamType {
 
 export enum ENUM_STATUS {
   ACTIVE = "active",
-  DEACTIVE = "deactivate",
+  DEACTIVATE = "deactivate",
+
+}
+// 'pending' | 'accept' | 'reject' | 'complete'|'cancel'
+export enum ENUM_BOOKING_STATUS {
+  PENDING = "pending",
+  ACCEPT = "accept",
+  REJECT = "reject",
+  COMPLETE = "complete",
+  CANCEL = "cancel",
 }

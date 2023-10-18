@@ -12,7 +12,22 @@ export const authApi = baseApi.injectEndpoints({
       }),
       // invalidatesTags:[tagTypes.user]
     }),
+    getProfile: build.query({
+      query: () => ({
+        url: `/users/profile`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.user],
+    }),
+    updateRole: build.mutation({
+      query: (data) => ({
+        url: `/users/update-role/${data.id}`,
+        method: "PATCH",
+        data: data.body,
+      }),
+      invalidatesTags: [tagTypes.user],
+    }),
   }),
 });
 
-export const { useUserLoginMutation } = authApi;
+export const { useUserLoginMutation,useGetProfileQuery,useUpdateRoleMutation } = authApi;

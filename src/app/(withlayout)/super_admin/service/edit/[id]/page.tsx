@@ -17,7 +17,7 @@ import {
   useUpdateServiceMutation,
 } from "@/redux/api/serviceApi";
 
-import { ICategory, IDepartment } from "@/types";
+import { ICategory } from "@/types";
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 
 import { Button, Col, Row, message } from "antd";
@@ -84,6 +84,7 @@ const EditServicePage = ({ params }: any) => {
               padding: "15px",
               marginBottom: "10px",
             }}
+            // className="relative"
           >
             <p
               style={{
@@ -111,15 +112,19 @@ const EditServicePage = ({ params }: any) => {
                   required={true}
                 />
               </Col>
+              <div>
+
               <Col
                 className="gutter-row"
                 xs={24}
-                md={12}
-                lg={8}
+                // md={12}
+                
                 style={{
                   marginBottom: "10px",
                 }}
               >
+                <div className="flex items-center justify-between gap-1">
+
                 <FormInput
                   type="number"
                   name="price"
@@ -127,7 +132,25 @@ const EditServicePage = ({ params }: any) => {
                   label="Per Ticket Price"
                   required={true}
                 />
+                <FormInput
+                      type="number"
+                      name="availableTickets"
+                      size="large"
+                      label="Available Tickets/sit"
+                      required={true}
+                    />
+                </div>
               </Col>
+              {/* <Col
+                    className="gutter-row"
+                    span={12}
+                    style={{
+                      marginBottom: "10px",
+                    }}
+                  >
+                    
+                  </Col> */}
+              </div>
               <Col
                 className="gutter-row"
                 xs={24}
@@ -154,32 +177,18 @@ const EditServicePage = ({ params }: any) => {
                   marginBottom: "10px",
                 }}
               >
-                <Row gutter={[16, 16]}>
+                {/* <Row gutter={[16, 16]}>
                   <Col
                     className="gutter-row"
                     span={12}
                     style={{
                       marginBottom: "10px",
                     }}
-                  >
+                  > */}
                     <FormDatePicker name="serviceDate" label="Date" />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormInput
-                      type="number"
-                      name="availableTickets"
-                      size="large"
-                      label="Available Tickets"
-                      required={true}
-                    />
-                  </Col>
-                </Row>
+                  {/* </Col>
+                  
+                </Row> */}
               </Col>
 
               <Col
@@ -253,7 +262,7 @@ const EditServicePage = ({ params }: any) => {
                   marginBottom: "10px",
                 }}
               >
-                <div className="grid grid-cols-1 lg:grid-cols-2">
+                {/* <div className="flex justify-start items-center border-2 rounded-lg"> */}
                   <UploadImage name="image" />
                   <Image
                     src={defaultValues?.image}
@@ -262,7 +271,7 @@ const EditServicePage = ({ params }: any) => {
                     className="w-36"
                     alt="d"
                   />
-                </div>
+                {/* </div> */}
               </Col>
               <Col span={12} style={{ margin: "10px 0" }}>
                 <FormTextArea
@@ -272,9 +281,9 @@ const EditServicePage = ({ params }: any) => {
                 />
               </Col>
 
-              {/* <Col span={12} style={{ margin: "10px 0" }}>
+              <Col span={12} style={{ margin: "10px 0" }}>
               <FormTextArea name="address" label="Address" rows={4} />
-            </Col> */}
+            </Col>
             </Row>
           </div>
           <div

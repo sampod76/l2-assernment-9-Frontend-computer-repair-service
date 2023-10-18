@@ -74,7 +74,7 @@ const EditServicePage = ({ params }: any) => {
   return (
     <div>
       <div>
-        {/* resolver={yupResolver(adminSchema)} */}
+        
         {/* resolver={yupResolver(IServiceSchema)} */}
         <Form submitHandler={onSubmit} defaultValues={defaultValues}>
           <div

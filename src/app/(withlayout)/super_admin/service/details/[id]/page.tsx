@@ -8,7 +8,7 @@ import Image from "next/image";
 
 
 const ServiceDetiles = ({ params }: any) => {
-  const { data: data, isLoading } = useGetSingleServiceQuery(
+  const { data: data={}, isLoading } = useGetSingleServiceQuery(
     params?.id ,{
       skip:!Boolean(params?.id)
     }
@@ -47,7 +47,7 @@ const ServiceDetiles = ({ params }: any) => {
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{data?.title}</div>
                 <p className="text-gray-700 text-base">
-                 {CutText(data?.description,100)}
+                 {data?.description && CutText(data?.description,100)}
                 </p>
                 <p className="text-gray-700 mt-2">Price: {data?.price} tk</p>
                 <p className="text-gray-700">Available Tickets: {data?.availableTickets}</p>

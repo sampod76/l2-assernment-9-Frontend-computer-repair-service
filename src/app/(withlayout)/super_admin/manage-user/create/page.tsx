@@ -11,7 +11,7 @@ import { bloodGroupOptions, genderOptions } from "@/constants/global";
 import { useAddGeneralUserWithFormDataMutation } from "@/redux/api/generalUserApi";
 
 
-import { adminSchema } from "@/schemas/admin";
+import { adminSchema, userSchema } from "@/schemas/admin";
 import { IDepartment } from "@/types";
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -44,7 +44,7 @@ const CreateGeneralUserPage = () => {
       <h1>Create Customer/normal user</h1>
       {/* resolver={yupResolver(adminSchema)} */}
       <div>
-        <Form submitHandler={onSubmit}>
+        <Form submitHandler={onSubmit} resolver={yupResolver(userSchema)}>
           <div
             style={{
               border: "1px solid #d9d9d9",

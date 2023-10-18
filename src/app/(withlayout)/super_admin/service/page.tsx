@@ -14,7 +14,6 @@ import { useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 
-import { IDepartment } from "@/types";
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
 import { useDeleteServiceMutation, useGetMultipalServicesQuery } from "@/redux/api/serviceApi";
@@ -191,7 +190,7 @@ const ServiceList = () => {
         <Input
           size="large"
           placeholder="Search"
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e:any) => setSearchTerm(e.target.value)}
           style={{
             width: "20%",
           }}

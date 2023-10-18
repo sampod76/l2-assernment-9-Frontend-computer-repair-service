@@ -41,9 +41,9 @@ const CreateAdminPage = () => {
   return (
     <div>
       <h1>Create Admin</h1>
-      {/* resolver={yupResolver(adminSchema)} */}
+      {/*  */}
       <div>
-        <Form submitHandler={onSubmit}>
+        <Form submitHandler={onSubmit} resolver={yupResolver(adminSchema)}>
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -92,7 +92,7 @@ const CreateAdminPage = () => {
                   name="email"
                   size="large"
                   label="Email address"
-                  required={true}
+                  // required={true}
                 />
               </Col>
               <Col
@@ -109,7 +109,7 @@ const CreateAdminPage = () => {
                   name="password"
                   size="large"
                   label="Password"
-                  required={true}
+                  // required={true}
                 />
               </Col>
 
