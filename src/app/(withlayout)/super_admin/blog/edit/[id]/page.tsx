@@ -14,7 +14,7 @@ import {
   useGetAllBlogQuery,
   useGetSingleBlogQuery,
   useUpdateBlogMutation,
-} from "@/redux/api/blog";
+} from "@/redux/api/blogApi";
 
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";

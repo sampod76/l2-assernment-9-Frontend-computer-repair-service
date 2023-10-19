@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 
-import { IDepartment } from "@/types";
+ 
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
 import { useDeleteServiceMutation, useGetMultipalServicesQuery } from "@/redux/api/serviceApi";

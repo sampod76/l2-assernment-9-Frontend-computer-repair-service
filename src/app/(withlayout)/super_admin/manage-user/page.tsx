@@ -16,7 +16,7 @@ import UMTable from "@/components/ui/UMTable";
 
  
 
-import { IDepartment } from "@/types";
+ 
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
 import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";

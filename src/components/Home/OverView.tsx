@@ -13,7 +13,7 @@ const OverView = () => {
         padding: "60px 0",
       }}
     >
-      <h1 className="text-center mb-6">Overview</h1>
+      {/* <h1 className="text-center mb-6">Overview</h1>
       <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-4 items-center gap-6">
 
         <div className="space-y-4 text-center">
@@ -67,7 +67,7 @@ const OverView = () => {
           </p>
         </div>
 
-      </div>
+      </div> */}
 
       
     </div>

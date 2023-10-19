@@ -7,6 +7,9 @@ import {
   ThunderboltOutlined,
   CreditCardOutlined,
   FileTextOutlined,
+  AccountBookFilled,
+  AlipayCircleFilled,
+  BorderOuterOutlined
 } from "@ant-design/icons";
 import Link from "next/link";
 import { USER_ROLE } from "./role";
@@ -35,7 +38,7 @@ export const sidebarItems = (role: string) => {
    
     {
       label: <Link href={`/${role}/manage-user`}>Manage User</Link>,
-      icon: <TableOutlined />,
+      icon: <AppstoreOutlined />,
       key: `/${role}/manage-user`,
     },
   ];
@@ -46,7 +49,7 @@ export const sidebarItems = (role: string) => {
     {
       label: "Manage service",
       key: "manage-service",
-      icon: <TableOutlined />,
+      icon: <ScheduleOutlined />,
       children: [
         {
           label: <Link href={`/${role}/service`}>Service List</Link>,
@@ -62,7 +65,7 @@ export const sidebarItems = (role: string) => {
     {
       label: "Manage category",
       key: "manage-category",
-      icon: <TableOutlined />,
+      icon: <CreditCardOutlined />,
       children: [
         {
           label: <Link href={`/${role}/category/create`}>Create Category</Link>,
@@ -78,7 +81,7 @@ export const sidebarItems = (role: string) => {
     {
       label: "Manage booking",
       key: "manage-booking",
-      icon: <TableOutlined />,
+      icon: <FileTextOutlined />,
       children: [
         {
           label: <Link href={`/${role}/booking`}>Booking List</Link>,
@@ -90,7 +93,7 @@ export const sidebarItems = (role: string) => {
     {
       label: "Manage Content",
       key: "manage-content",
-      icon: <TableOutlined />,
+      icon: <ThunderboltOutlined />,
       children: [
         {
           label: <Link href={`/${role}/blog`}>Blog List</Link>,
@@ -113,7 +116,7 @@ export const sidebarItems = (role: string) => {
     ...adminSidebarItems,
     {
       label: <Link href={`/${role}/admin`}>Manage Admin</Link>,
-      icon: <TableOutlined />,
+      icon: <AlipayCircleFilled />,
       key: `/${role}/admin`,
     },
       
@@ -124,18 +127,18 @@ export const sidebarItems = (role: string) => {
     ...defaultSidebarItems,
     {
       label: <Link href={`/${role}/booking`}>Booking History</Link>,
-      icon: <TableOutlined />,
+      icon: <ThunderboltOutlined />,
       key: `/${role}/Service`,
     },   
     {
       label: <Link href={`/${role}/review`}>Review/Feedback History</Link>,
-      icon: <TableOutlined />,
+      icon: <AccountBookFilled />,
       key: `/${role}/review`,
     },   
      
     {
       label: <Link href={`/${role}/support`}>Support and Help</Link>,
-      icon: <TableOutlined />,
+      icon: <BorderOuterOutlined />,
       key: `/${role}/support`,
     },   
   ];

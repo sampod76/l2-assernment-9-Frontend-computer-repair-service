@@ -14,23 +14,7 @@ const ServiceDetiles = ({ params }: any) => {
   );
   console.log(data);
 
-  const defaultValues = {
-    name: {
-      firstName: data?.name?.firstName || "",
-      lastName: data?.name?.lastName || "",
-      middleName: data?.name?.middleName || "",
-    },
-    dateOfBirth: data?.dateOfBirth || "",
-    email: data?.email || "",
-    designation: data?.designation || "",
-    contactNo: data?.contactNo || "",
-    emergencyContactNo: data?.emergencyContactNo || "",
-    permanentAddress: data?.permanentAddress || "",
-    presentAddress: data?.presentAddress || "",
-    bloodGroup: data?.bloodGroup || "",
-    gender: data?.gender || "",
-    managementDepartment: data?.managementDepartment?.id || "",
-  };
+ 
   if (isLoading) {
     return <LoadingForDataFetch />;
   }

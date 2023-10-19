@@ -8,7 +8,7 @@ import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import FormTimePicker from "@/components/Forms/FormTimePicker";
 import UploadImage from "@/components/ui/UploadImage";
-import { useAddBlogMutation, useGetAllBlogQuery } from "@/redux/api/blog";
+import { useAddBlogMutation, useGetAllBlogQuery } from "@/redux/api/blogApi";
 
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";

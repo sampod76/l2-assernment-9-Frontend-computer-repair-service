@@ -46,7 +46,7 @@ export const generalUserApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: data.body,
       }),
-      invalidatesTags: [tagTypes.general_user],
+      invalidatesTags: [tagTypes.general_user,tagTypes.user],
     }),
     deleteGeneralUser: build.mutation({
       query: (id) => ({

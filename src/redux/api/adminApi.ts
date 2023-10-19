@@ -1,4 +1,4 @@
-import { IAdmin, IMeta } from "@/types";
+import {  IMeta } from "@/types";
 import { baseApi } from "./baseApi";
 import { tagTypes } from "../tag-types";
 
@@ -46,7 +46,7 @@ export const adminApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: data.body,
       }),
-      invalidatesTags: [tagTypes.admin],
+      invalidatesTags: [tagTypes.admin,tagTypes.user],
     }),
     deleteAdmin: build.mutation({
       query: (id) => ({

@@ -20,7 +20,7 @@ import UMModal from "@/components/ui/UMModal";
 import { useDeleteServiceMutation, useGetMultipalServicesQuery } from "@/redux/api/serviceApi";
 import Image from "next/image";
 import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";
-import { useDeleteBlogMutation, useGetAllBlogQuery } from "@/redux/api/blog";
+import { useDeleteBlogMutation, useGetAllBlogQuery } from "@/redux/api/blogApi";
 import { USER_ROLE } from "@/constants/role";
 
 const BlogList = () => {

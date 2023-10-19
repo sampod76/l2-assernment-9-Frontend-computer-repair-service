@@ -14,7 +14,7 @@ import { useAddGeneralUserWithFormDataMutation } from "@/redux/api/generalUserAp
 
 import { adminSchema } from "@/schemas/admin";
 import { storeUserInfo } from "@/services/auth.service";
-import { IDepartment } from "@/types";
+ 
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";
 

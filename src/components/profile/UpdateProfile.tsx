@@ -5,46 +5,105 @@ import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
 import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
+import HomeHeader from "@/components/Home/HomeHeader";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UploadImage from "@/components/ui/UploadImage";
 import { bloodGroupOptions, genderOptions } from "@/constants/global";
-import { useAddGeneralUserWithFormDataMutation } from "@/redux/api/generalUserApi";
+import { USER_ROLE } from "@/constants/role";
+import { useUpdateAdminMutation } from "@/redux/api/adminApi";
+import { useGetProfileQuery, useUserLoginMutation } from "@/redux/api/authApi";
+import {
+  useAddGeneralUserWithFormDataMutation,
+  useUpdateGeneralUserMutation,
+} from "@/redux/api/generalUserApi";
 
+import { adminSchema } from "@/schemas/admin";
+import { getUserInfo, storeUserInfo } from "@/services/auth.service";
 
-import { adminSchema, userSchema } from "@/schemas/admin";
- 
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { Button, Col, Row, message } from "antd";
+import { Button, Col, Image, Row, Space, Spin, message } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import LoadingForDataFetch from "../Utlis/LoadingForDataFetch";
+import { NO_IMAGE } from "@/constants/filePatch";
+import { useUpdateSuperAdminMutation } from "@/redux/api/superAdminApi";
 
-const CreateGeneralUserPage = () => {
-  const [addGeneralUserWithFormData,{isLoading}] = useAddGeneralUserWithFormDataMutation();
+const UpdateProfile = () => {
+  const [user, setUserData] = useState<any>({});
+  const [userLoading, setUserLoading] = useState<boolean>(true);
+  useEffect(() => {
+    setUserData(getUserInfo() as any);
+    setUserLoading(false);
+    return () => {};
+  }, []);
+  const { data = {}, isLoading: profileLoading } = useGetProfileQuery("");
+  console.log(data);
+  const userData = data?.generalUser || data?.admin || data?.superAdmin;
+  const [updateGeneralUser, { isLoading }] = useUpdateGeneralUserMutation();
+  const [updateAdmin, { isLoading: updateAdminLoader }] =
+    useUpdateAdminMutation();
+  const [updateSuperAdmin, { isLoading: updateSuperAdminLoader }] =
+    useUpdateSuperAdminMutation();
 
   const onSubmit = async (values: any) => {
-    console.log(values);
+    console.log(user);
+
     try {
-      const res = await addGeneralUserWithFormData({...values}).unwrap();
+      let res;
+      if (user?.role === USER_ROLE.GENERAL_USER) {
+        res = await updateGeneralUser({
+          id: userData?._id,
+          body: values,
+        }).unwrap();
+      } else if (user?.role === USER_ROLE.ADMIN) {
+        res = await updateAdmin({
+          id: userData?._id,
+          body: values,
+        }).unwrap();
+      } else if (user?.role === USER_ROLE.SUPER_ADMIN) {
+        console.log(user);
+        res = await updateSuperAdmin({
+          id: userData?._id,
+          body: values,
+        }).unwrap();
+      }
       if (res?.success == false) {
-        Error_model_hook(res?.message)
+        Error_model_hook(res?.message);
       } else {
-        Success_model("Customar created successfully")
+        Success_model("Profile update  successfully");
       }
       // message.success("Admin created successfully!");
     } catch (err: any) {
       console.error(err.message);
     }
   };
-  if(isLoading){
-    return message.loading("Loading...")
+  if (
+    isLoading ||
+    userLoading ||
+    updateAdminLoader ||
+    profileLoading ||
+    updateSuperAdminLoader
+  ) {
+    return <LoadingForDataFetch />;
   }
+  const defaultValues = {
+    name: userData?.name || "",
+    email: userData?.email || "",
+    phoneNumber: userData?.phoneNumber || "",
+    profileImage: userData?.profileImage || "",
+    gender: userData?.gender || "",
+    dateOfBirth: userData?.dateOfBirth || "",
+    address: userData?.address || "",
+    description: userData?.description || "",
+  };
 
   return (
     <div>
-      <h1>Create Customer/normal user</h1>
       {/* resolver={yupResolver(adminSchema)} */}
-      <div>
-        <Form submitHandler={onSubmit} resolver={yupResolver(userSchema)}>
+      <div className="container mx-auto p-5">
+        <Form submitHandler={onSubmit} defaultValues={defaultValues}>
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -58,8 +117,9 @@ const CreateGeneralUserPage = () => {
                 fontSize: "18px",
                 marginBottom: "10px",
               }}
+              className="text-lg text-center"
             >
-              Admin Information
+              Account Registration
             </p>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
@@ -76,7 +136,6 @@ const CreateGeneralUserPage = () => {
                   name="name"
                   size="large"
                   label="Full Name"
-                  required={true}
                 />
               </Col>
               <Col
@@ -93,24 +152,8 @@ const CreateGeneralUserPage = () => {
                   name="email"
                   size="large"
                   label="Email address"
-                  required={true}
-                />
-              </Col>
-              <Col
-                className="gutter-row"
-                xs={24}
-                md={12}
-                lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <FormInput
-                  type="password"
-                  name="password"
-                  size="large"
-                  label="Password"
-                  required={true}
+                  disabled={true}
+                //   readOnly={true}
                 />
               </Col>
 
@@ -123,7 +166,16 @@ const CreateGeneralUserPage = () => {
                   marginBottom: "10px",
                 }}
               >
-                <UploadImage name="image" />
+                <div className="flex justify-start items-start gap-4">
+                  <UploadImage name="profileImage" />
+                  <Image
+                    src={defaultValues?.profileImage || NO_IMAGE}
+                    width={300}
+                    height={300}
+                    style={{ width: "80px", height: "80px" }}
+                    alt=""
+                  />
+                </div>
               </Col>
             </Row>
           </div>
@@ -161,7 +213,6 @@ const CreateGeneralUserPage = () => {
                   options={genderOptions}
                   label="Gender"
                   placeholder="Select"
-                  required={true}
                 />
               </Col>
 
@@ -179,7 +230,6 @@ const CreateGeneralUserPage = () => {
                   name="phoneNumber"
                   size="large"
                   label="Phone Number"
-                  required={true}
                 />
               </Col>
               <Col
@@ -206,13 +256,26 @@ const CreateGeneralUserPage = () => {
               </Col>
             </Row>
           </div>
-          <Button htmlType="submit" type="primary">
-            Create
-          </Button>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {isLoading ? (
+              <Spin></Spin>
+            ) : (
+              <Button size="large" htmlType="submit" type="primary">
+                Update
+              </Button>
+            )}
+          </div>
         </Form>
       </div>
     </div>
   );
 };
 
-export default CreateGeneralUserPage;
+export default UpdateProfile;

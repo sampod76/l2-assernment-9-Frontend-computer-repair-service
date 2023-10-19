@@ -1,11 +1,11 @@
 import { tagTypes } from "@/redux/tag-types";
-import {   IMeta } from "@/types";
+import {  IMeta } from "@/types";
 import { baseApi } from "./baseApi";
 import { IBlog } from "@/schemas/blog";
 
 const BLOG_URL = "/blogs";
 
-export const blogApi = baseApi.injectEndpoints({
+export const blogsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get all academic departments
     getAllBlog: build.query({
@@ -22,7 +22,7 @@ export const blogApi = baseApi.injectEndpoints({
           meta,
         };
       },
-      providesTags: [tagTypes.blog],
+      // providesTags: [tagTypes.academicDepartment],
     }),
     // get single academic department
     getSingleBlog: build.query({
@@ -30,7 +30,7 @@ export const blogApi = baseApi.injectEndpoints({
         url: `${BLOG_URL}/${id}`,
         method: "GET",
       }),
-      providesTags: [tagTypes.blog],
+      // providesTags: [tagTypes.academicDepartment],
     }),
     // create a new academic department
     addBlog: build.mutation({
@@ -39,7 +39,7 @@ export const blogApi = baseApi.injectEndpoints({
         method: "POST",
         data,
       }),
-      invalidatesTags: [tagTypes.blog],
+      // invalidatesTags: [tagTypes.academicDepartment],
     }),
     // update ac department
     updateBlog: build.mutation({
@@ -48,7 +48,7 @@ export const blogApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: data.body,
       }),
-      invalidatesTags: [tagTypes.blog],
+      // invalidatesTags: [tagTypes.academicDepartment],
     }),
 
     // delete ac department
@@ -57,7 +57,7 @@ export const blogApi = baseApi.injectEndpoints({
         url: `${BLOG_URL}/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.blog],
+      // invalidatesTags: [tagTypes.academicDepartment],
     }),
   }),
 });
@@ -68,4 +68,4 @@ export const {
   useGetAllBlogQuery,
   useGetSingleBlogQuery,
   useUpdateBlogMutation,
-} = blogApi;
+} = blogsApi;

@@ -1,7 +1,7 @@
 "use client";
 
 import LoadingForDataFetch from "@/components/Utlis/LoadingForDataFetch";
-import { useGetSingleBlogQuery } from "@/redux/api/blog";
+import { useGetSingleBlogQuery } from "@/redux/api/blogApi";
 import { Input } from "antd";
 
 import Image from "next/image";

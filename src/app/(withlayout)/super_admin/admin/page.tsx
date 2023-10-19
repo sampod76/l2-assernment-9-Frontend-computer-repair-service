@@ -13,11 +13,21 @@ import {
 import { useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
-import { useDeleteAdminMutation,  useGetMultipleAdminsQuery } from '@/redux/api/adminApi';
- 
+import {
+  useDeleteAdminMutation,
+  useGetMultipleAdminsQuery,
+} from "@/redux/api/adminApi";
+
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
-import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";
+import {
+  Error_model_hook,
+  Success_model,
+  confirm_modal,
+} from "@/utils/modalHook";
+import Image from "next/image";
+import { NO_IMAGE } from "@/constants/filePatch";
+import LoadingForDataFetch from "@/components/Utlis/LoadingForDataFetch";
 
 const AdminPage = () => {
   const query: Record<string, any> = {};
@@ -48,10 +58,28 @@ const AdminPage = () => {
 
   //@ts-ignore
   const adminData = data?.data;
+  console.log(adminData);
   //@ts-ignore
   const meta = data?.meta;
 
   const columns = [
+    {
+      title: "",
+      render: function (data: any) {
+     
+        return (
+          <>
+            <Image
+              src={data?.profileImage || NO_IMAGE}
+              width={300}
+              height={300}
+              className="w-14"
+              alt=""
+            />
+          </>
+        );
+      },
+    },
     {
       title: "Name",
       render: function (data: any) {
@@ -75,15 +103,17 @@ const AdminPage = () => {
     {
       title: "Contact no.",
       dataIndex: "phoneNumber",
-      key:"_id"
+      key: "_id",
     },
     {
       title: "Role update",
-      
-      render: function (data: any) {
-        return <Button onClick={()=>handleUpdataRole(data._id)}>
 
-        </Button>;
+      render: function (data: any) {
+        return (
+          <Button onClick={() => handleUpdataRole(data._id)}>
+            Admin to Normal user
+          </Button>
+        );
       },
     },
     {
@@ -108,7 +138,11 @@ const AdminPage = () => {
                 <EditOutlined />
               </Button>
             </Link>
-            <Button onClick={() => deleteAdminHandler(data)} type="primary" danger>
+            <Button
+              onClick={() => deleteAdminHandler(data)}
+              type="primary"
+              danger
+            >
               <DeleteOutlined />
             </Button>
           </>
@@ -136,16 +170,16 @@ const AdminPage = () => {
 
   const deleteAdminHandler = async (id: string) => {
     console.log(id);
-    confirm_modal(`Are you sure you want to delete`).then(async(res) => {
+    confirm_modal(`Are you sure you want to delete`).then(async (res) => {
       if (res.isConfirmed) {
         try {
           const res = await deleteAdmin(id).unwrap();
-          if (res.success ==false) {
+          if (res.success == false) {
             // message.success("Admin Successfully Deleted!");
             // setOpen(false);
-            Error_model_hook(res?.message)
-          }else{
-            Success_model("Admin Successfully Deleted")
+            Error_model_hook(res?.message);
+          } else {
+            Success_model("Admin Successfully Deleted");
           }
         } catch (error: any) {
           message.error(error.message);
@@ -154,31 +188,31 @@ const AdminPage = () => {
     });
   };
   const handleUpdataRole = async (id: string) => {
-    console.log(id);
-    confirm_modal(`Are you sure you want to Downgrade customer`,"Yes").then(async(res) => {
-      if (res.isConfirmed) {
-        try {
-          const res = await deleteAdmin(id).unwrap();
-          if (res.success ==false) {
-            // message.success("Admin Successfully Deleted!");
-            // setOpen(false);
-            Error_model_hook(res?.message)
-          }else{
-            Success_model("Admin Successfully Deleted")
+    confirm_modal(`Are you sure you want to Downgrade customer`, "Yes").then(
+      async (res) => {
+        if (res.isConfirmed) {
+          try {
+            const res = await deleteAdmin(id).unwrap();
+            if (res.success == false) {
+              // message.success("Admin Successfully Deleted!");
+              // setOpen(false);
+              Error_model_hook(res?.message);
+            } else {
+              Success_model("Admin Successfully Deleted");
+            }
+          } catch (error: any) {
+            message.error(error.message);
           }
-        } catch (error: any) {
-          message.error(error.message);
         }
       }
-    });
+    );
   };
-  if(isLoading){
-    return message.loading("Loading..")
+  if (isLoading) {
+    return <LoadingForDataFetch/>;
   }
-console.log(data);
+  console.log(data);
   return (
     <div>
-    
       <ActionBar title="Admin List">
         <Input
           size="large"

@@ -8,28 +8,25 @@ import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import FormTimePicker from "@/components/Forms/FormTimePicker";
 import UploadImage from "@/components/ui/UploadImage";
+import { useAddBlogMutation, useGetAllBlogQuery } from "@/redux/api/blogApi";
+import { useAddFaqMutation } from "@/redux/api/faqApi";
 
-import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
-import { useAddServiceWithFormDataMutation } from "@/redux/api/serviceApi";
-import { IServiceSchema } from "@/schemas/service";
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Col, Row, Select, message } from "antd";
 import React, { useState } from "react";
 
-const CreateService = () => {
-  const [addService, { isLoading: serviceLoading }] =
-    useAddServiceWithFormDataMutation();
-  const { data = [], isLoading } = useGetAllCategoryQuery({});
+const CreateFaq = () => {
+  const [addFaq, { isLoading: blogLoading }] = useAddFaqMutation();
   const onSubmit = async (values: any) => {
     console.log(values);
-   
+
     try {
-      const res = await addService(values).unwrap();
-      if(res.success == false) {
-        Error_model_hook(res?.message)
-      }else{
-        Success_model("Successfully added service")
+      const res = await addFaq(values).unwrap();
+      if (res.success == false) {
+        Error_model_hook(res?.message);
+      } else {
+        Success_model("Successfully added Blog");
       }
       console.log(res);
     } catch (error: any) {
@@ -38,8 +35,8 @@ const CreateService = () => {
     }
   };
 
-  if(serviceLoading){
-    return message.loading("Loading...")
+  if (blogLoading) {
+    return message.loading("Loading...");
   }
 
   return (
@@ -47,7 +44,7 @@ const CreateService = () => {
       <div>
         {/* resolver={yupResolver(adminSchema)} */}
         {/* resolver={yupResolver(IServiceSchema)} */}
-        <Form submitHandler={onSubmit} >
+        <Form submitHandler={onSubmit}>
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -62,12 +59,14 @@ const CreateService = () => {
                 marginBottom: "10px",
               }}
             >
-              Service Information
+              Faq Information
             </p>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
                 className="gutter-row"
-                 xs={24} md={12} lg={8}
+                xs={24}
+                md={12}
+                lg={8}
                 style={{
                   marginBottom: "10px",
                 }}
@@ -76,150 +75,17 @@ const CreateService = () => {
                   type="text"
                   name="title"
                   size="large"
-                  label="Service Name"
+                  label="Blog Title"
                   required={true}
                 />
-              </Col>
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <FormInput
-                  type="number"
-                  name="price"
-                  size="large"
-                  label="Per Ticket Price"
-                  required={true}
-                />
-              </Col>
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <FormInput
-                  type="text"
-                  name="contact"
-                  size="large"
-                  label="Bus Driver Number"
-                  required={true}
-                />
-              </Col>
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <Row gutter={[16, 16]}>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormDatePicker name="serviceDate" label="Date"  />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormInput
-                      type="number"
-                      name="availableTickets"
-                      size="large"
-                      label="Available Tickets"
-                      required={true}
-                    />
-                  </Col>
-                </Row>
               </Col>
 
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <Row gutter={[16, 16]}>
-                  <Col
-                    className="gutter-row"
-                    xs={24}
-                    md={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormSelectField
-                      name="category"
-                      label="Select Category"
-                      required={true}
-                      options={
-                        //@ts-ignore
-                        data?.data?.map((e) => ({
-                          value: e._id,
-                          label: e.title,
-                        }))
-                      }
-                    />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    xs={24}
-                    md={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormSelectField
-                      name="status"
-                      label="Select status"
-                      required={true}
-                      options={[
-                        {
-                          value: "available",
-                          label: "Available",
-                        },
-                        {
-                          value: "upcoming",
-                          label: "Upcoming",
-                        },
-                        {
-                          value: "unavailable",
-                          label: "Unavailable",
-                        },
-                      ]}
-                    />
-                  </Col>
-                </Row>
-              </Col>
 
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <UploadImage  name="image" />
-              </Col>
-              <Col span={12} style={{ margin: "10px 0" }}>
+              <Col span={24} style={{ margin: "10px 0" }}>
                 <FormTextArea
-                  name="description"
-                  label="Service description"
-                  rows={4}
-                 
+                  name="content"
+                  label="Faq content"
+                  rows={10}
                 />
               </Col>
 
@@ -238,4 +104,4 @@ const CreateService = () => {
   );
 };
 
-export default CreateService;
+export default CreateFaq;

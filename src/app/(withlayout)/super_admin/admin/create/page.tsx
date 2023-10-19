@@ -11,7 +11,7 @@ import { bloodGroupOptions, genderOptions } from "@/constants/global";
 import { useAddAdminWithFormDataMutation } from "@/redux/api/adminApi";
 
 import { adminSchema } from "@/schemas/admin";
-import { IDepartment } from "@/types";
+ 
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import { yupResolver } from "@hookform/resolvers/yup";
 

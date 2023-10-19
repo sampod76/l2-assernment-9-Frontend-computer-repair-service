@@ -6,7 +6,7 @@ import { useGetSingleServiceQuery } from "@/redux/api/serviceApi";
 import Image from "next/image";
 
 
-const ServiceDetiles = ({ params }: any) => {
+const FaqDetails = ({ params }: any) => {
   const { data: data, isLoading } = useGetSingleServiceQuery(
     params?.id ,{
       skip:!Boolean(params?.id)
@@ -72,4 +72,4 @@ const ServiceDetiles = ({ params }: any) => {
   );
 };
 
-export default ServiceDetiles;
+export default FaqDetails;

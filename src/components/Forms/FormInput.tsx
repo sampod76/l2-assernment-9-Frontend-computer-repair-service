@@ -82,6 +82,7 @@ const FormInput = ({
                 // type={type}
                 style={{width: "100%", marginRight:"2px"}}
                 readOnly={readOnly}
+                disabled={disabled}
                 min={0}
                 size={size}
                 placeholder={placeholder}
@@ -92,6 +93,7 @@ const FormInput = ({
           ) : (
             <Input
               required={required}
+              disabled={disabled}
               type={type}
               size={size}
               readOnly={readOnly}
