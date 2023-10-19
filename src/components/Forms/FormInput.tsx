@@ -15,6 +15,7 @@ interface IInput {
   label?: string;
   required?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 const FormInput = ({
@@ -28,6 +29,7 @@ const FormInput = ({
   label,
   required,
   disabled = false,
+  readOnly=false,
 }: IInput) => {
   const {
     control,
@@ -57,6 +59,7 @@ const FormInput = ({
               disabled={disabled}
               type={type}
               size={size}
+              readOnly={readOnly}
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}
@@ -77,6 +80,8 @@ const FormInput = ({
               </h1>
               <InputNumber
                 // type={type}
+                style={{width: "100%", marginRight:"2px"}}
+                readOnly={readOnly}
                 min={0}
                 size={size}
                 placeholder={placeholder}
@@ -89,6 +94,7 @@ const FormInput = ({
               required={required}
               type={type}
               size={size}
+              readOnly={readOnly}
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}

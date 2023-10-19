@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useGetMultipalServicesQuery } from "@/redux/api/serviceApi";
 import LoadingForDataFetch from "../Utlis/LoadingForDataFetch";
-import { Button, Col, Row, Modal } from "antd";
+import { Button, Col, Row, Modal, Select } from "antd";
 import { NO_IMAGE } from "@/constants/filePatch";
 import { CutText } from "@/utils/CutText";
 import Form from "../Forms/Form";
@@ -19,6 +19,9 @@ import { useAddBookingMutation } from "@/redux/api/bookingApi";
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 import Link from "next/link";
 import { ENUM_BOOKING_STATUS } from "@/constants/global";
+import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
+import { useDebounced } from "@/redux/hooks";
+import Search, { SearchProps } from "antd/es/input/Search";
 
 const UpComingService = ({
   status,
@@ -37,10 +40,23 @@ const UpComingService = ({
   const [bookMarkData, setBookMarkData] = useState<Partial<IService>>({});
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(limit || 10);
+  const [category, setCategory] = useState<string>("");
+  const [searchTerm, setSearchTem] = useState<string>("");
   query["limit"] = size;
   query["page"] = page;
   query["status"] = dataQuery;
+  query["category"] = category;
+  const debouncedSearchTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 600,
+  });
+
+  if (!!debouncedSearchTerm) {
+    query["searchTerm"] = debouncedSearchTerm;
+  }
   const { data = [], isLoading } = useGetMultipalServicesQuery({ ...query });
+  const { data: Allcategory = [], isLoading: catagoryLoading } =
+    useGetAllCategoryQuery({});
   const [addBooking, { isLoading: bookingLoading }] = useAddBookingMutation();
 
   //
@@ -75,15 +91,38 @@ const UpComingService = ({
     setOpen(false);
   };
   //
-
-  if (isLoading) {
+  const onSearch: SearchProps['onSearch'] = (value, _e, info) => setSearchTem(value);
+  if (isLoading || catagoryLoading) {
     return <LoadingForDataFetch />;
   }
   return (
     <div>
-      <h1 className="my-4 text-center text-3xl border-b-2">
-        {text || "All Upcoming Service"}
-      </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="my-4 text-end text-3xl border-b-2">
+          {text || "All Upcoming Service"}
+        </h1>
+        <div className="flex items-center gap-2">
+          <div>
+          <h1>Search</h1>
+        <Search placeholder="input search text" onSearch={onSearch} enterButton />
+          </div>
+          <div>
+            <h1>Category</h1>
+            <Select
+              placeholder={"Select category"}
+              style={{ width: 120 }}
+              onChange={(value) => setCategory(value)}
+              options={
+                //@ts-ignore
+                Allcategory?.data?.map((e) => ({
+                  value: e._id,
+                  label: e.title,
+                }))
+              }
+            />
+          </div>
+        </div>
+      </div>
       <Row gutter={[16, 16]}>
         {
           //@ts-ignore
@@ -108,7 +147,7 @@ const UpComingService = ({
                   <div className="px-6 py-4">
                     <div className="font-bold text-xl mb-2">{single.title}</div>
                     <p className="text-gray-700 text-base  overflow-hidden ">
-                      {single?.description && CutText(single?.description, 120)}
+                      {single?.address && CutText(single?.address, 120)}
                     </p>
                   </div>
                   <div className="px-6 pt-4 pb-2">
@@ -122,15 +161,19 @@ const UpComingService = ({
                       Unit: {single?.availableTickets}
                     </span>
                   </div>
-                  <div className="absolute right-0 bottom-0 p-2">
+                  <div className="flex justify-between items-center px-5 gap-4">
                     <Link
-                     href={`/service/${single._id}`}
-                    //  className=" text-white p-1 mx-1 rounded-xl"
-                     style={{"padding":"0.45rem","marginLeft":"0.25rem","marginRight":"0.25rem","borderRadius":"0.20rem","color":"#ffffff","backgroundColor":"#60A5FA"}}
+                      href={`/service/${single._id}`}
+                      style={{ width: "100%" }}
+                      //  className=" text-white p-1 mx-1 rounded-xl"
                     >
-                      View 
+                      <Button style={{ width: "100%" }} type="primary">
+                        View
+                      </Button>
                     </Link>
                     <Button
+                      disabled={single?.status === "upcoming"}
+                      style={{ width: "100%" }}
                       onClick={() => {
                         setBookMarkData(single);
                         showModal();

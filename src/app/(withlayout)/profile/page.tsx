@@ -23,16 +23,16 @@ const ProfileTemplate = () => {
       <Space align="center" direction="horizontal">
 
       <Row gutter={16}>
-        <Col span={2}>
+        <Col span={8}>
           <Image
-            width={300}
-            height={300}
+            width={800}
+            height={800}
             src={userData?.profileImage || NO_IMAGE}
             alt="Profile"
-            style={{ width: "150px", borderRadius: "150px" }}
+            style={{ width: "300px", borderRadius: "100%" }}
           />
         </Col>
-        <Col span={18}>
+        <Col span={16}>
           <Title level={3}>Name: {userData?.name}</Title>
           <Text strong>Email:</Text> <Text>{userData?.email}</Text>
           <br />

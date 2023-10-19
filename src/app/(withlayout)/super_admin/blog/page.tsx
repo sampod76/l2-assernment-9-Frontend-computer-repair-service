@@ -14,16 +14,19 @@ import { useState } from "react";
 import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 
-import { IDepartment } from "@/types";
+
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
 import { useDeleteServiceMutation, useGetMultipalServicesQuery } from "@/redux/api/serviceApi";
 import Image from "next/image";
 import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";
+import { useDeleteBlogMutation, useGetAllBlogQuery } from "@/redux/api/blog";
+import { USER_ROLE } from "@/constants/role";
 
-const ServiceList = () => {
+const BlogList = () => {
+  const SUPER_ADMIN = USER_ROLE.SUPER_ADMIN
   const query: Record<string, any> = {};
-  const [deleteService] = useDeleteServiceMutation();
+  const [deleteBlog] = useDeleteBlogMutation();
 
   const [page, setPage] = useState<number>(1);
   const [size, setSize] = useState<number>(10);
@@ -46,11 +49,11 @@ const ServiceList = () => {
   if (!!debouncedSearchTerm) {
     query["searchTerm"] = debouncedSearchTerm;
   }
-  const { data = [], isLoading } = useGetMultipalServicesQuery({ ...query });
+  const { data = [], isLoading } = useGetAllBlogQuery({ ...query });
 
   //@ts-ignore
-  const adminData = data?.data;
-  console.log("🚀 ~ file: page.tsx:51 ~ ServiceList ~ adminData:", adminData)
+  const blogData = data?.data;
+  console.log("🚀 ~ file: page.tsx:51 ~ ServiceList ~ adminData:", blogData)
   //@ts-ignore
   const meta = data?.meta;
 
@@ -58,7 +61,7 @@ const ServiceList = () => {
     confirm_modal(`Are you sure you want to delete`).then(async(res) => {
       if (res.isConfirmed) {
         try {
-          const res = await deleteService(id).unwrap();
+          const res = await deleteBlog(id).unwrap();
           if (res.success ==false) {
             // message.success("Admin Successfully Deleted!");
             // setOpen(false);
@@ -82,15 +85,11 @@ const ServiceList = () => {
       width:100
     },
     {
-      title: "Name",
+      title: "Title",
       dataIndex: "title",
       ellipsis: true,
     },
   
-    {
-      title: "Price",
-      dataIndex: "price",
-    },
    
     {
       title: "Created at",
@@ -100,17 +99,7 @@ const ServiceList = () => {
       },
       sorter: true,
     },
-    {
-      title: "Contact no.",
-      dataIndex: "contact",
-    },
-    {
-      title: "Category",
-    //   dataIndex: "category",
-      render: function (data: any) {
-        return <>{data?.category?.title}</>;
-      },
-    },
+    
     {
       title: "Status",
       dataIndex: "status",
@@ -121,12 +110,12 @@ const ServiceList = () => {
       render: function (data: any) {
         return (
           <>
-            <Link href={`/super_admin/service/details/${data}`}>
+            <Link href={`/${SUPER_ADMIN}/blog/details/${data}`}>
               <Button onClick={() => console.log(data)} type="primary">
                 <EyeOutlined />
               </Button>
             </Link>
-            <Link href={`/super_admin/service/edit/${data}`}>
+            <Link href={`/${SUPER_ADMIN}/blog/edit/${data}`}>
               <Button
                 style={{
                   margin: "0px 5px",
@@ -166,7 +155,7 @@ const ServiceList = () => {
   const deleteAdminHandler = async (id: string) => {
     // console.log(id);
     try {
-      const res = await deleteService(id);
+      const res = await deleteBlog(id);
       if (res) {
         message.success("Admin Successfully Deleted!");
         setOpen(false);
@@ -182,12 +171,12 @@ const ServiceList = () => {
       {/* <UMBreadCrumb
         items={[
           {
-            label: "super_admin",
-            link: "/super_admin",
+            label: "${SUPER_ADMIN}",
+            link: "/${SUPER_ADMIN}",
           },
         ]}
       /> */}
-      <ActionBar title="Service List">
+      <ActionBar title="blog List">
         <Input
           size="large"
           placeholder="Search"
@@ -197,8 +186,8 @@ const ServiceList = () => {
           }}
         />
         <div>
-          <Link href="/super_admin/service/create">
-            <Button type="primary">Create service</Button>
+          <Link href={`/${SUPER_ADMIN}/blog/create`}>
+            <Button type="primary">Create blog</Button>
           </Link>
           {(!!sortBy || !!sortOrder || !!searchTerm) && (
             <Button
@@ -215,7 +204,7 @@ const ServiceList = () => {
       <UMTable
         loading={isLoading}
         columns={columns}
-        dataSource={adminData}
+        dataSource={blogData}
         pageSize={size}
         totalPages={meta?.total}
         showSizeChanger={true}
@@ -236,4 +225,4 @@ const ServiceList = () => {
   );
 };
 
-export default ServiceList;
+export default BlogList;

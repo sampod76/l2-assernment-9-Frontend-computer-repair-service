@@ -61,7 +61,7 @@ const CreateCategory = () => {
                 marginBottom: "10px",
               }}
             >
-              Service Information
+              Create category
             </p>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
@@ -75,7 +75,7 @@ const CreateCategory = () => {
                   type="text"
                   name="title"
                   size="large"
-                  label="Service Name"
+                  label="Category Name"
                   required={true}
                 />
               </Col>
@@ -86,145 +86,9 @@ const CreateCategory = () => {
                   marginBottom: "10px",
                 }}
               >
-                <FormInput
-                  type="number"
-                  name="price"
-                  size="large"
-                  label="Per Ticket Price"
-                  required={true}
-                />
+                <UploadImage name="image" />
               </Col>
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <FormInput
-                  type="text"
-                  name="contact"
-                  size="large"
-                  label="Bus Driver Number"
-                  required={true}
-                />
-              </Col>
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <Row gutter={[16, 16]}>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormDatePicker name="serviceDate" label="Date"  />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormInput
-                      type="number"
-                      name="availableTickets"
-                      size="large"
-                      label="Available Tickets"
-                      required={true}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <Row gutter={[16, 16]}>
-                  <Col
-                    className="gutter-row"
-                    xs={24}
-                    md={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormSelectField
-                      name="category"
-                      label="Select Category"
-                      required={true}
-                      options={
-                        //@ts-ignore
-                        data?.data?.map((e) => ({
-                          value: e._id,
-                          label: e.title,
-                        }))
-                      }
-                    />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    xs={24}
-                    md={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormSelectField
-                      name="status"
-                      label="Select status"
-                      required={true}
-                      options={[
-                        {
-                          value: "available",
-                          label: "Available",
-                        },
-                        {
-                          value: "upcoming",
-                          label: "Upcoming",
-                        },
-                        {
-                          value: "unavailable",
-                          label: "Unavailable",
-                        },
-                      ]}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-
-              <Col
-                className="gutter-row"
-                 xs={24} md={12} lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <UploadImage  name="image" />
-              </Col>
-              <Col span={12} style={{ margin: "10px 0" }}>
-                <FormTextArea
-                  name="description"
-                  label="Service description"
-                  rows={4}
-                 
-                />
-              </Col>
-
-              {/* <Col span={12} style={{ margin: "10px 0" }}>
-                <FormTextArea name="address" label="Address" rows={4} />
-              </Col> */}
+            
             </Row>
           </div>
 

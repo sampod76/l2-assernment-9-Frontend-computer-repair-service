@@ -1,6 +1,6 @@
 "use client";
 
-import Form from "@/components/Forms/Form";
+import FormCustom from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
 import FormSelectField from "@/components/Forms/FormSelectField";
@@ -13,48 +13,42 @@ import {
   useUpdateBookingMutation,
 } from "@/redux/api/bookingApi";
 import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
-import { Error_model_hook, Success_model } from "@/utils/modalHook";
-import { Button, Col, Input, InputNumber, Row } from "antd";
+import {
+  useAddRatingFeedbackMutation,
+  useGetAllRatingFeedbackQuery,
+} from "@/redux/api/ratingFeedback";
+import { getUserInfo } from "@/services/auth.service";
+import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";
+import { Button, Col, Input, InputNumber, Row, Form, Rate } from "antd";
+import { Rationale } from "next/font/google";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { serviceApi } from "../../../../../../redux/api/serviceApi";
 
 const BookingDetails = ({ params }: any) => {
+  const [form] = Form.useForm();
+  const [user, setUserData] = useState<any>({});
+  const [userLoading, setUserLoading] = useState<boolean>(true);
+  useEffect(() => {
+    setUserData(getUserInfo() as any);
+    setUserLoading(false);
+    return () => {};
+  }, []);
   const [changeBookingTickets, setChangeBookingTickets] = useState<number>(0);
-  const { data: bookingData, isLoading } = useGetSingleBookingQuery(
+  const { data: bookingData = {}, isLoading } = useGetSingleBookingQuery(
     params?.id,
     {
       skip: !Boolean(params?.id),
     }
   );
+  console.log(bookingData);
+  const ratingFeedBack = bookingData?.ratingFeedback;
 
-  // const { data: categoryData = [], isLoading: categoryLoading } =
-  //   useGetAllCategoryQuery({});
   const [updateBooking, { isLoading: bookingLoading }] =
     useUpdateBookingMutation();
-
-  const onSubmit = async (data: any) => {
-    const updateData = {
-      ...data,
-      bookingTickets: changeBookingTickets || bookingData?.bookingTickets,
-    };
-
-    try {
-      //@ts-ignore
-      const res = await updateBooking({
-        id: params?.id,
-        body: updateData,
-      }).unwrap();
-      if (res.success == false) {
-        Error_model_hook(res?.message + "");
-      } else {
-        Success_model("Successfully update booking");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  //
+  const [addRating, { isLoading: ratingLoading }] =
+    useAddRatingFeedbackMutation();
 
   const defaultValues = {
     // name:,
@@ -72,13 +66,65 @@ const BookingDetails = ({ params }: any) => {
     customerName: bookingData?.user?.generalUser?.name || "",
     perSitPrice: bookingData?.service?.price || 0,
   };
+  const onFinish = async (values: any) => {
+    console.log("Received values:", values);
+    try {
+      const res = await addRating({
+        ...values,
+        booking: params.id,
+        service: bookingData?.service?._id,
+      }).unwrap();
+
+      if (res.success == false) {
+        // message.success("Admin Successfully Deleted!");
+        // setOpen(false);
+        Error_model_hook(res?.message);
+      } else {
+        // Success_model("Review Successfully add!");
+        console.log(res);
+        //@ts-ignore
+        const resBooking = await updateBooking({
+          id: params?.id,
+          body: { ratingFeedback: res?._id ,status:'complete'},
+        }).unwrap();
+        console.log(resBooking);
+        if (resBooking.success == false) {
+          Error_model_hook(resBooking?.message + "");
+        } else {
+          Success_model("Successfully update booking");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handlePayment = (value: string) => {
+    confirm_modal("Are you sure you want to payment this","Yes payment").then(async (res) => {
+      if (res.isConfirmed) {
+        try {
+          //@ts-ignore
+          const res = await updateBooking({
+            id: params?.id,
+            body: { payment: true },
+          }).unwrap();
+          if (res.success == false) {
+            Error_model_hook(res?.message + "");
+          } else {
+            Success_model("Successfully update booking");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
+  };
   if (isLoading || bookingLoading) {
     return <LoadingForDataFetch />;
   }
   return (
     <>
       <div className="container mx-auto mt-10">
-        <Form submitHandler={onSubmit} defaultValues={defaultValues}>
+        <FormCustom submitHandler={() => {}} defaultValues={defaultValues}>
           <div className="flex justify-between items-center">
             <h1 className="text-lg font-bold">
               Service name : {bookingData?.service?.title}
@@ -156,6 +202,7 @@ const BookingDetails = ({ params }: any) => {
                 <h1>Booking Sit</h1>
                 <InputNumber
                   type="number"
+                  readOnly={true}
                   defaultValue={defaultValues.bookingTickets}
                   onChange={(value) => setChangeBookingTickets(value)}
                   style={{ width: "100px" }}
@@ -197,6 +244,7 @@ const BookingDetails = ({ params }: any) => {
                 label="Google Map Link "
                 name="googleMapLink"
                 placeholder="Please provide googleMapLink"
+                readOnly={true}
               />
             </Col>
             <Col
@@ -207,28 +255,15 @@ const BookingDetails = ({ params }: any) => {
                 marginBottom: "10px",
               }}
             >
-              <FormSelectField
-                name="status"
-                label="Select status"
-                options={[
-                  {
-                    value: "pending",
-                    label: "Pending",
-                  },
-                  {
-                    value: "accept",
-                    label: "Accept",
-                  },
-                  {
-                    value: "reject",
-                    label: "Reject",
-                  },
-                  // {
-                  //   value: "complete",
-                  //   label: "Complete",
-                  // },
-                ]}
-              />
+              <div className="border-2 p-3 flex flex-col justify-center items-center">
+                <h1>Status</h1>
+                <Button
+                  type="primary"
+                  danger={defaultValues?.status === "reject"}
+                >
+                  {defaultValues?.status}
+                </Button>
+              </div>
             </Col>
           </Row>
           <FormInput label="location/address" name="address" />
@@ -238,13 +273,78 @@ const BookingDetails = ({ params }: any) => {
             label="Authority Note"
             name="authorityNote"
             placeholder="Please provide authorityNote"
+            readOnly={true}
           />
-          <div className="my-2 flex justify-center items-center">
+          <div className="m-2">
+
+          {defaultValues.status == "accept" && bookingData?.payment ==false && (
+              <Button onClick={() => handlePayment(params?.id)} type="primary">
+                Payment
+              </Button>
+            )}
+          </div>
+          {/* <div className="my-2 flex justify-center items-center">
             <Button htmlType="submit" type="primary">
               Submit
             </Button>
+          </div> */}
+        </FormCustom>
+        <h1 className="text-center text-2xl my-7">Rating and feedback</h1>
+       {bookingData?.payment && <div>
+
+        {ratingFeedBack?.rating ? (
+          <div className="border-2 rounded-xl p-5">
+            <Form
+              name="rating-feedback"
+              form={form}
+              initialValues={{
+                rating: ratingFeedBack?.rating || 0,
+                feedback: ratingFeedBack?.feedback || "",
+              }}
+            >
+              <Form.Item name="rating" label="Rating">
+                <Rate disabled />
+              </Form.Item>
+
+              <Form.Item name="feedback" label="Feedback">
+                <Input.TextArea readOnly rows={4} />
+              </Form.Item>
+            </Form>
           </div>
-        </Form>
+        ) : (
+          <div className="border-2 rounded-xl p-5">
+            <Form name="rating-feedback" onFinish={onFinish}>
+              <Form.Item
+                name="rating"
+                label="Rating"
+                rules={[{ required: true, message: "Please provide a rating" }]}
+              >
+                <Rate />
+              </Form.Item>
+
+              <Form.Item
+                name="feedback"
+                label="Feedback"
+                rules={[{ required: true, message: "Please provide feedback" }]}
+              >
+                <Input.TextArea rows={4} />
+              </Form.Item>
+
+              <Form.Item
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        )}
+        </div>}
       </div>
     </>
   );

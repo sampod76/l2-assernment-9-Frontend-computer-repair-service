@@ -1,6 +1,6 @@
 "use client";
 
-import Form from "@/components/Forms/Form";
+import FormComponent from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
 import FormSelectField from "@/components/Forms/FormSelectField";
@@ -13,13 +13,19 @@ import {
   useUpdateBookingMutation,
 } from "@/redux/api/bookingApi";
 import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
-import { Error_model_hook, Success_model } from "@/utils/modalHook";
-import { Button, Col, Input, InputNumber, Row } from "antd";
+import { useAddRatingFeedbackMutation } from "@/redux/api/ratingFeedback";
+import {
+  Error_model_hook,
+  Success_model,
+  confirm_modal,
+} from "@/utils/modalHook";
+import { Button, Col, Form, Input, InputNumber, Rate, Row } from "antd";
 
 import Image from "next/image";
 import { useState } from "react";
 
 const BookingDetails = ({ params }: any) => {
+  const [form] = Form.useForm();
   const [changeBookingTickets, setChangeBookingTickets] = useState<number>(0);
   const { data: bookingData, isLoading } = useGetSingleBookingQuery(
     params?.id,
@@ -28,11 +34,13 @@ const BookingDetails = ({ params }: any) => {
     }
   );
 
+  const ratingFeedBack = bookingData?.ratingFeedback;
   // const { data: categoryData = [], isLoading: categoryLoading } =
   //   useGetAllCategoryQuery({});
   const [updateBooking, { isLoading: bookingLoading }] =
     useUpdateBookingMutation();
-
+  const [addRating, { isLoading: ratingLoading }] =
+    useAddRatingFeedbackMutation();
   const onSubmit = async (data: any) => {
     const updateData = {
       ...data,
@@ -72,13 +80,49 @@ const BookingDetails = ({ params }: any) => {
     customerName: bookingData?.user?.generalUser?.name || "",
     perSitPrice: bookingData?.service?.price || 0,
   };
+  const onFinish = async (values: any) => {
+    console.log("Received values:", values);
+    try {
+      const res = await addRating({ ...values }).unwrap();
+      if (res.success == false) {
+        // message.success("Admin Successfully Deleted!");
+        // setOpen(false);
+        Error_model_hook(res?.message);
+      } else {
+        Success_model("Review Successfully add!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePayment = (value: string) => {
+    confirm_modal("Are you sure you want to payment this").then(async (res) => {
+      if (res.isConfirmed) {
+        try {
+          //@ts-ignore
+          const res = await updateBooking({
+            id: params?.id,
+            body: { payment: true },
+          }).unwrap();
+          if (res.success == false) {
+            Error_model_hook(res?.message + "");
+          } else {
+            Success_model("Successfully update booking");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
+  };
   if (isLoading || bookingLoading) {
     return <LoadingForDataFetch />;
   }
   return (
     <>
       <div className="container mx-auto mt-10">
-        <Form submitHandler={onSubmit} defaultValues={defaultValues}>
+        <FormComponent submitHandler={onSubmit} defaultValues={defaultValues}>
           <div className="flex justify-between items-center">
             <h1 className="text-lg font-bold">
               Service name : {bookingData?.service?.title}
@@ -211,17 +255,17 @@ const BookingDetails = ({ params }: any) => {
                 name="status"
                 label="Select status"
                 options={[
-                  {
-                    value: "pending",
-                    label: "Pending",
-                  },
+                  // {
+                  //   value: "pending",
+                  //   label: "Pending",
+                  // },
                   {
                     value: "accept",
                     label: "Accept",
                   },
                   {
-                    value: "reject",
-                    label: "Reject",
+                    value: "cancel",
+                    label: "Cancel",
                   },
                   // {
                   //   value: "complete",
@@ -229,6 +273,15 @@ const BookingDetails = ({ params }: any) => {
                   // },
                 ]}
               />
+              <div className="border-2 p-3 flex flex-col justify-center items-center">
+                <h1>Status</h1>
+                <Button
+                  type="primary"
+                  danger={defaultValues?.status === "reject"}
+                >
+                  {defaultValues?.status}
+                </Button>
+              </div>
             </Col>
           </Row>
           <FormInput label="location/address" name="address" />
@@ -238,13 +291,72 @@ const BookingDetails = ({ params }: any) => {
             label="Authority Note"
             name="authorityNote"
             placeholder="Please provide authorityNote"
+            readOnly={true}
           />
           <div className="my-2 flex justify-center items-center">
             <Button htmlType="submit" type="primary">
               Submit
             </Button>
+
+            {defaultValues.status == "accept" && (
+              <Button onClick={() => handlePayment(params?.id)} type="primary">
+                Payment
+              </Button>
+            )}
           </div>
-        </Form>
+        </FormComponent>
+        {/* {ratingFeedBack?.rating ? (
+          <div className="border-2 rounded-xl p-5">
+            <Form
+              name="rating-feedback"
+              form={form}
+              initialValues={{
+                rating: ratingFeedBack?.rating || 0,
+                feedback: ratingFeedBack?.feedback || "",
+              }}
+            >
+              <Form.Item name="rating" label="Rating">
+                <Rate disabled />
+              </Form.Item>
+
+              <Form.Item name="feedback" label="Feedback">
+                <Input.TextArea readOnly rows={4} />
+              </Form.Item>
+            </Form>
+          </div>
+        ) : (
+          <div className="border-2 rounded-xl p-5">
+            <Form name="rating-feedback" onFinish={onFinish}>
+              <Form.Item
+                name="rating"
+                label="Rating"
+                rules={[{ required: true, message: "Please provide a rating" }]}
+              >
+                <Rate />
+              </Form.Item>
+
+              <Form.Item
+                name="feedback"
+                label="Feedback"
+                rules={[{ required: true, message: "Please provide feedback" }]}
+              >
+                <Input.TextArea rows={4} />
+              </Form.Item>
+
+              <Form.Item
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        )} */}
       </div>
     </>
   );

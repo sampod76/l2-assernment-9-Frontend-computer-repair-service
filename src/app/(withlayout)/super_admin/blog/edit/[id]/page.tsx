@@ -3,72 +3,56 @@
 import Form from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
-import FormSelectField, {
-  SelectOptions,
-} from "@/components/Forms/FormSelectField";
+import FormMultiSelectField from "@/components/Forms/FormMultiSelectField";
+import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
-import LoadingForDataFetch from "@/components/Utlis/LoadingForDataFetch";
-import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
+import FormTimePicker from "@/components/Forms/FormTimePicker";
 import UploadImage from "@/components/ui/UploadImage";
-import { bloodGroupOptions, genderOptions } from "@/constants/global";
-import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
+import { NO_IMAGE } from "@/constants/filePatch";
 import {
-  useGetSingleServiceQuery,
-  useUpdateServiceMutation,
-} from "@/redux/api/serviceApi";
+  useAddBlogMutation,
+  useGetAllBlogQuery,
+  useGetSingleBlogQuery,
+  useUpdateBlogMutation,
+} from "@/redux/api/blog";
 
-import { ICategory, IDepartment } from "@/types";
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
-
-import { Button, Col, Row, message } from "antd";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button, Col, Row, Select, message } from "antd";
 import Image from "next/image";
+import React, { useState } from "react";
 
-const EditServicePage = ({ params }: any) => {
-  const { data: serviceData, isLoading } = useGetSingleServiceQuery(params?.id);
-  const { data: categoryData = [] } = useGetAllCategoryQuery({});
-  const [updateService, { isLoading: updateLoading, error }] =
-    useUpdateServiceMutation();
-
+const EditBlog = ({params}:{params:any}) => {
+  const {data={},isLoading}=useGetSingleBlogQuery(params.id,{
+    skip:!Boolean(params.id)
+  })
+  const [updateBlog, { isLoading: blogLoading }] = useUpdateBlogMutation();
   const onSubmit = async (values: any) => {
-    const UpdateValues = {
-      ...values,
-      availableTickets: Number(values?.availableTickets || 0),
-      price: Number(values?.price || 0),
-    };
+    console.log(values);
+
     try {
-      const res = await updateService({
-        id: params?.id,
-        data: UpdateValues,
-      }).unwrap();
-      console.log(res);
-      if (res?.success == false) {
+      const res = await updateBlog({id:params.id,body:values}).unwrap();
+      if (res.success == false) {
         Error_model_hook(res?.message);
       } else {
-        Success_model("successfully updated data");
+        Success_model("Successfully added Blog");
       }
-    } catch (err: any) {
-      console.error(err.message);
+      console.log(res);
+    } catch (error: any) {
+      Error_model_hook(error?.message);
+      console.log(error);
     }
   };
-  if (isLoading || updateLoading) {
-    return <LoadingForDataFetch />;
-  }
-  if (error) {
-    console.log(error);
+
+  if (blogLoading || isLoading) {
+    return message.loading("Loading...");
   }
 
   const defaultValues = {
-    title: serviceData?.title || "",
-    price: serviceData?.price || "",
-    image: serviceData?.image || "",
-    description: serviceData?.description || "",
-    address: serviceData?.address || "",
-    contact: serviceData?.contact || "",
-    availableTickets: serviceData?.availableTickets || "",
-    serviceDate: serviceData?.serviceDate || "",
-    status: serviceData?.status || "",
-    category: serviceData?.category?._id || "",
-    // managementDepartment: serviceData?.managementDepartment?.id || "",
+    image:data?.image || NO_IMAGE,
+    title:data?.title ||"",
+    content:data?.content || "",
+
   };
 
   return (
@@ -91,7 +75,7 @@ const EditServicePage = ({ params }: any) => {
                 marginBottom: "10px",
               }}
             >
-              Service Information
+              Blog Information
             </p>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
@@ -107,79 +91,9 @@ const EditServicePage = ({ params }: any) => {
                   type="text"
                   name="title"
                   size="large"
-                  label="Service Name"
+                  label="Blog Title"
                   required={true}
                 />
-              </Col>
-              <Col
-                className="gutter-row"
-                xs={24}
-                md={12}
-                lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <FormInput
-                  type="number"
-                  name="price"
-                  size="large"
-                  label="Per Ticket Price"
-                  required={true}
-                />
-              </Col>
-              <Col
-                className="gutter-row"
-                xs={24}
-                md={12}
-                lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <FormInput
-                  type="text"
-                  name="contact"
-                  size="large"
-                  label="Bus Driver Number"
-                  required={true}
-                />
-              </Col>
-              <Col
-                className="gutter-row"
-                xs={24}
-                md={12}
-                lg={8}
-                style={{
-                  marginBottom: "10px",
-                }}
-              >
-                <Row gutter={[16, 16]}>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormDatePicker name="serviceDate" label="Date" />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    span={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormInput
-                      type="number"
-                      name="availableTickets"
-                      size="large"
-                      label="Available Tickets"
-                      required={true}
-                    />
-                  </Col>
-                </Row>
               </Col>
 
               <Col
@@ -191,59 +105,8 @@ const EditServicePage = ({ params }: any) => {
                   marginBottom: "10px",
                 }}
               >
-                <Row gutter={[16, 16]}>
-                  <Col
-                    className="gutter-row"
-                    xs={24}
-                    md={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormSelectField
-                      name="category"
-                      label="Select Category"
-                      required={true}
-                      options={
-                        //@ts-ignore
-                        categoryData?.data?.map((e) => ({
-                          value: e._id,
-                          label: e.title,
-                        }))
-                      }
-                    />
-                  </Col>
-                  <Col
-                    className="gutter-row"
-                    xs={24}
-                    md={12}
-                    style={{
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <FormSelectField
-                      name="status"
-                      label="Select status"
-                      required={true}
-                      options={[
-                        {
-                          value: "available",
-                          label: "Available",
-                        },
-                        {
-                          value: "upcoming",
-                          label: "Upcoming",
-                        },
-                        {
-                          value: "unavailable",
-                          label: "Unavailable",
-                        },
-                      ]}
-                    />
-                  </Col>
-                </Row>
+                <UploadImage name="image" />
               </Col>
-
               <Col
                 className="gutter-row"
                 xs={24}
@@ -253,45 +116,30 @@ const EditServicePage = ({ params }: any) => {
                   marginBottom: "10px",
                 }}
               >
-                <div className="grid grid-cols-1 lg:grid-cols-2">
-                  <UploadImage name="image" />
-                  <Image
-                    src={defaultValues?.image}
-                    width={100}
-                    height={100}
-                    className="w-36"
-                    alt="d"
-                  />
-                </div>
+
+                <Image src={defaultValues?.image} width={300} height={300} alt="dd"/>
               </Col>
-              <Col span={12} style={{ margin: "10px 0" }}>
+              <Col span={24} style={{ margin: "10px 0" }}>
                 <FormTextArea
-                  name="description"
-                  label="Service description"
-                  rows={4}
+                  name="content"
+                  label="Blog descricontentption"
+                  rows={10}
                 />
               </Col>
 
               {/* <Col span={12} style={{ margin: "10px 0" }}>
-              <FormTextArea name="address" label="Address" rows={4} />
-            </Col> */}
+                <FormTextArea name="address" label="Address" rows={4} />
+              </Col> */}
             </Row>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Button htmlType="submit" type="primary">
-              Update
-            </Button>
-          </div>
+
+          <Button htmlType="submit" type="primary">
+            Update
+          </Button>
         </Form>
       </div>
     </div>
   );
 };
 
-export default EditServicePage;
+export default EditBlog;

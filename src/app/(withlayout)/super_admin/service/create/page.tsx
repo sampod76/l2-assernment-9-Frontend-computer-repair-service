@@ -21,10 +21,10 @@ const CreateService = () => {
   const [addService, { isLoading: serviceLoading }] =
     useAddServiceWithFormDataMutation();
   const { data = [], isLoading } = useGetAllCategoryQuery({});
- 
+
   const onSubmit = async (values: any) => {
     const changeValues = { ...values, serviceDate: new Date().toISOString() };
-
+    console.log(changeValues);
     try {
       const res = await addService({ ...changeValues }).unwrap();
       if (res.success == false) {
@@ -40,15 +40,14 @@ const CreateService = () => {
   };
 
   if (serviceLoading) {
-     message.loading("Loading...");
+    message.loading("Loading...");
   }
 
   return (
     <div>
       <div>
-        
         {/* resolver={yupResolver(IServiceSchema)} */}
-        <Form submitHandler={onSubmit} resolver={yupResolver(IServiceSchema)}>
+        <Form submitHandler={onSubmit}>
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -134,7 +133,10 @@ const CreateService = () => {
                       marginBottom: "10px",
                     }}
                   >
-                    <FormDatePicker name="serviceDate" label="*Date (launching date)" />
+                    <FormDatePicker
+                      name="serviceDate"
+                      label="*Date (launching date)"
+                    />
                   </Col>
                   <Col
                     className="gutter-row"
@@ -236,7 +238,11 @@ const CreateService = () => {
               </Col>
 
               <Col span={12} style={{ margin: "10px 0" }}>
-                <FormTextArea name="address" label="*Aria (Areas where the services will be provided)" rows={4} />
+                <FormTextArea
+                  name="address"
+                  label="*Aria (Areas where the services will be provided)"
+                  rows={4}
+                />
               </Col>
             </Row>
           </div>

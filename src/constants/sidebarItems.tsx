@@ -23,7 +23,7 @@ export const sidebarItems = (role: string) => {
       icon: <ProfileOutlined />,
       children: [
         {
-          label: <Link href={`/${role}`}>Account Profile</Link>,
+          label: <Link href={`/profile`}>Account Profile</Link>,
           key: `/${role}/profile`,
         },
        
@@ -123,20 +123,16 @@ export const sidebarItems = (role: string) => {
   const generalUserSidebarItems: MenuProps["items"] = [
     ...defaultSidebarItems,
     {
-      label: <Link href={`/${role}/Service`}>Service History</Link>,
+      label: <Link href={`/${role}/booking`}>Booking History</Link>,
       icon: <TableOutlined />,
       key: `/${role}/Service`,
     },   
     {
-      label: <Link href={`/${role}/review`}>Review History</Link>,
+      label: <Link href={`/${role}/review`}>Review/Feedback History</Link>,
       icon: <TableOutlined />,
       key: `/${role}/review`,
     },   
-    {
-      label: <Link href={`/${role}/feedback`}>Feedback History</Link>,
-      icon: <TableOutlined />,
-      key: `/${role}/feedback`,
-    },   
+     
     {
       label: <Link href={`/${role}/support`}>Support and Help</Link>,
       icon: <TableOutlined />,

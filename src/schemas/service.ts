@@ -14,7 +14,7 @@ export const IServiceSchema = yup.object().shape({
     serviceDate: yup.string().required('Service date is required'),
     category: yup.string().required('Category is required'),
     status: yup.string().oneOf(['available', 'upcoming', 'unavailable']),
-    publisher: yup.string().required('Publisher is required'),
+    publisher: yup.string(),
     // You can include the reviews validation here if needed
     // reviews: yup.array().of(yup.object().shape({
     //   userId: yup.string().required('User ID is required'),
@@ -26,15 +26,15 @@ export const IServiceSchema = yup.object().shape({
   export interface IService {
     title: string;
     price: string;
-    image: string;
-    description: string;
+    image?: string;
+    description?: string;
     address?: string;
     contact: string;
     availableTickets: string;
     serviceDate: string;
     category: string;
     status: ServiceStatusType;
-    publisher: string;
+    publisher?: string;
     // If you want to include the reviews validation:
     // reviews?: Array<{
     //   userId: string;

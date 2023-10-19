@@ -15,8 +15,6 @@ import { useDebounced } from "@/redux/hooks";
 import UMTable from "@/components/ui/UMTable";
 import { useDeleteAdminMutation,  useGetMultipleAdminsQuery } from '@/redux/api/adminApi';
  
-
-import { IDepartment } from "@/types";
 import dayjs from "dayjs";
 import UMModal from "@/components/ui/UMModal";
 import { Error_model_hook, Success_model, confirm_modal } from "@/utils/modalHook";
@@ -77,6 +75,16 @@ const AdminPage = () => {
     {
       title: "Contact no.",
       dataIndex: "phoneNumber",
+      key:"_id"
+    },
+    {
+      title: "Role update",
+      
+      render: function (data: any) {
+        return <Button onClick={()=>handleUpdataRole(data._id)}>
+
+        </Button>;
+      },
     },
     {
       title: "Action",
@@ -129,6 +137,25 @@ const AdminPage = () => {
   const deleteAdminHandler = async (id: string) => {
     console.log(id);
     confirm_modal(`Are you sure you want to delete`).then(async(res) => {
+      if (res.isConfirmed) {
+        try {
+          const res = await deleteAdmin(id).unwrap();
+          if (res.success ==false) {
+            // message.success("Admin Successfully Deleted!");
+            // setOpen(false);
+            Error_model_hook(res?.message)
+          }else{
+            Success_model("Admin Successfully Deleted")
+          }
+        } catch (error: any) {
+          message.error(error.message);
+        }
+      }
+    });
+  };
+  const handleUpdataRole = async (id: string) => {
+    console.log(id);
+    confirm_modal(`Are you sure you want to Downgrade customer`,"Yes").then(async(res) => {
       if (res.isConfirmed) {
         try {
           const res = await deleteAdmin(id).unwrap();
