@@ -12,13 +12,7 @@ const Footer = () => {
           <div className="flex">
             <div className="w-full -mx-6 lg:w-2/5">
               <div className="px-6">
-                <a href="#">
-                  <img
-                    className="w-auto h-7"
-                    src="https://merakiui.com/images/full-logo.svg"
-                    alt=""
-                  />
-                </a>
+                
 
                 <p className="max-w-sm mt-2 text-gray-500 dark:text-gray-400">
                   Join 31,000+ other and never miss out on new tips, tutorials,

@@ -215,6 +215,7 @@ const Registration = () => {
                   name="dateOfBirth"
                   label="Date of birth"
                   size="large"
+                  disablePrevious={false}
                 />
               </Col>
 

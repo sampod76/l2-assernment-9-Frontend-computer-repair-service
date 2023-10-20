@@ -17,7 +17,7 @@ import {
   useUpdateServiceMutation,
 } from "@/redux/api/serviceApi";
 
-import { ICategory, IDepartment } from "@/types";
+
 import { Error_model_hook, Success_model } from "@/utils/modalHook";
 
 import { Button, Col, Row, message } from "antd";
